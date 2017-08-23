@@ -4,6 +4,12 @@
 #include <ESP8266mDNS.h>
 #include <ESP8266HTTPUpdateServer.h>
 #include <ESP8266HTTPClient.h>
+#include "DHT.h"
+
+#define DHTPIN 4
+#define DHTTYPE DHT11
+
+DHT dht(DHTPIN, DHTTYPE);
 
 const char *host = "esp8266-webupdate";
 const char *ssid = "PNSC";
@@ -15,10 +21,50 @@ ESP8266HTTPUpdateServer httpUpdater;
 HTTPClient http;
 
 int ledPin = 2;
-int dht11Pin = 13;
-int waterLevelPin = 12;
-int waterPump01Pin = 5;
-int waterPump02Pin = 4;
+// int dht11Pin = 13;
+// int waterLevelPin = 12;
+// int waterPump01Pin = 5;
+// int waterPump02Pin = 4;
+
+String readFromSensorsAsJson()
+{
+  int soilMoistureValue = analogRead(A0);
+  float humidity = dht.readHumidity();
+  float temperature = dht.readTemperature();
+
+  if (isnan(humidity) || isnan(temperature))
+  {
+    String error = "{\"errorCode\": \"READ_ERROR_DHT\"}";
+    return error;
+  }
+
+  String jsonMessage = "[{\"reading\": ";
+  jsonMessage += soilMoistureValue;
+  jsonMessage += ", \"readingType\": SOIL_MOISTURE}, ";
+
+  jsonMessage += "{\"reading\": ";
+  jsonMessage += humidity;
+  jsonMessage += ", \"readingType\": HUMIDITY}, ";
+
+  jsonMessage += "{\"reading\": ";
+  jsonMessage += temperature;
+  jsonMessage += ", \"readingType\": TEMPERATURE}]";
+
+  return jsonMessage;
+}
+
+void handleSensorRequest()
+{
+  httpServer.send(200, "application/json", readFromSensorsAsJson());
+}
+
+void postSensorReadings()
+{
+  http.addHeader("Content-Type", "application/json");
+  http.POST(readFromSensorsAsJson());
+
+  http.end();
+}
 
 void OTASetup()
 {
@@ -42,22 +88,6 @@ void OTASetup()
   Serial.printf("HTTPUpdateServer ready! Open http://%s.local/update in your browser\n", host);
 }
 
-String readFromSensorsAsJson()
-{
-  int analogeValue = analogRead(A0);
-  String jsonMessage = "{\"reading\": ";
-  jsonMessage += analogeValue;
-
-  jsonMessage += ", \"readingType\": 1}";
-
-  return jsonMessage;
-}
-
-void handleSensorRequest()
-{
-  httpServer.send(200, "application/json", readFromSensorsAsJson());
-}
-
 void webServerSetup()
 {
   httpServer.on("/sensor", handleSensorRequest);
@@ -68,12 +98,9 @@ void plantManagerServerSetup()
   http.begin("http://192.168.1.100:3000/sensor");
 }
 
-void postSensorReadings()
+void dhtSensorSetup()
 {
-  http.addHeader("Content-Type", "application/json");
-  http.POST(readFromSensorsAsJson());
-
-  http.end();
+  dht.begin();
 }
 
 void setup(void)
