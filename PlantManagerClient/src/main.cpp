@@ -10,6 +10,16 @@
 int pinDHT11 = 14;
 int pinSoilMoisture01 = 4;
 int pinSoilMoisture02 = 5;
+int pinWaterPump01 = 12;
+int pinWaterPump02 = 13;
+int pinWaterSensor = 16;
+
+long wateringTime = 2000;
+long delayAfterWatering = 15000;
+int soilMoistureDryValue = 850;
+int soilMoistureWetValue = 600;
+int soilMoistureMiddleValue = 725;
+
 SimpleDHT11 dht11;
 
 const char *host = "esp8266-webupdate";
@@ -33,6 +43,23 @@ int readFromSoilMoistureSensor(int poweringPin)
   return result;
 }
 
+bool isWateringNeeded(int soilMoisturePin)
+{
+  int soilMoistureValue = readFromSoilMoistureSensor(soilMoisturePin);
+  if (soilMoistureValue >= soilMoistureDryValue)
+  {
+    return true;
+  }
+  else if (soilMoistureValue >= soilMoistureMiddleValue)
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
 int *readFromDHT11Sensor(int *results)
 {
   byte temperature = 0;
@@ -51,7 +78,28 @@ int *readFromDHT11Sensor(int *results)
   return results;
 }
 
-String readFromSensorsAsJson()
+bool canActivateWaterPump()
+{
+  int isWateringAllowed = digitalRead(pinWaterSensor);
+
+  if (isWateringAllowed == 1)
+  {
+    return true;
+  }
+  return false;
+}
+
+void activateWaterPump(int waterPumpPin)
+{
+  if (canActivateWaterPump())
+  {
+    digitalWrite(waterPumpPin, LOW);
+    delay(wateringTime);
+    digitalWrite(waterPumpPin, HIGH);
+  }
+}
+
+String getSensorReadingsAsJson()
 {
   String jsonMessage;
 
@@ -96,13 +144,20 @@ String readFromSensorsAsJson()
 
 void handleSensorRequest()
 {
-  httpServer.send(200, "application/json", readFromSensorsAsJson());
+  httpServer.send(200, "application/json", getSensorReadingsAsJson());
+}
+
+void handleWaterPumpRequest()
+{
+  activateWaterPump(pinWaterPump01);
+  activateWaterPump(pinWaterPump02);
+  httpServer.send(200);
 }
 
 void postSensorReadings()
 {
   http.addHeader("Content-Type", "application/json");
-  http.POST(readFromSensorsAsJson());
+  http.POST(getSensorReadingsAsJson());
 
   http.end();
 }
@@ -127,6 +182,7 @@ void OTASetup()
 void webServerSetup()
 {
   httpServer.on("/sensor", handleSensorRequest);
+  httpServer.on("/sensor/waterpump", handleWaterPumpRequest);
 }
 
 void plantManagerServerSetup()
@@ -143,11 +199,22 @@ void soilMoistureSetup()
   digitalWrite(pinSoilMoisture02, LOW);
 }
 
+void waterPumpAndSensorSetup()
+{
+  pinMode(pinWaterPump01, OUTPUT);
+  pinMode(pinWaterPump02, OUTPUT);
+  pinMode(pinWaterSensor, INPUT);
+
+  digitalWrite(pinWaterPump01, HIGH);
+  digitalWrite(pinWaterPump02, HIGH);
+}
+
 void setup(void)
 {
   OTASetup();
   webServerSetup();
   soilMoistureSetup();
+  waterPumpAndSensorSetup();
 
   httpServer.begin();
 }
@@ -155,4 +222,19 @@ void setup(void)
 void loop(void)
 {
   httpServer.handleClient();
+
+  bool isWateringNeeded01 = isWateringNeeded(pinSoilMoisture01);
+  bool isWateringNeeded02 = isWateringNeeded(pinSoilMoisture02);
+
+  if (isWateringNeeded01 == true)
+  {
+    activateWaterPump(pinWaterPump01);
+  }
+
+  if (isWateringNeeded02 == true)
+  {
+    activateWaterPump(pinWaterPump02);
+  }
+
+  delay(delayAfterWatering);
 }
