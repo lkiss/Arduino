@@ -4,12 +4,13 @@
 #include <ESP8266mDNS.h>
 #include <ESP8266HTTPUpdateServer.h>
 #include <ESP8266HTTPClient.h>
-#include "DHT.h"
+#include <SimpleDHT.h>
+#include <ArduinoJson.h>
 
-#define DHTPIN 4
-#define DHTTYPE DHT11
-
-DHT dht(DHTPIN, DHTTYPE);
+int pinDHT11 = 14;
+int pinSoilMoisture01 = 4;
+int pinSoilMoisture02 = 5;
+SimpleDHT11 dht11;
 
 const char *host = "esp8266-webupdate";
 const char *ssid = "PNSC";
@@ -19,37 +20,77 @@ const String deviceId = "Device01";
 ESP8266WebServer httpServer(80);
 ESP8266HTTPUpdateServer httpUpdater;
 HTTPClient http;
+DynamicJsonBuffer jsonBuffer(200);
 
-int ledPin = 2;
-// int dht11Pin = 13;
-// int waterLevelPin = 12;
-// int waterPump01Pin = 5;
-// int waterPump02Pin = 4;
+int readFromSoilMoistureSensor(int poweringPin)
+{
+  int result = 0;
+  digitalWrite(poweringPin, HIGH);
+  delay(50);
+  result = analogRead(A0);
+  digitalWrite(poweringPin, LOW);
+  delay(50);
+  return result;
+}
+
+int *readFromDHT11Sensor(int *results)
+{
+  byte temperature = 0;
+  byte humidity = 0;
+  int err = SimpleDHTErrSuccess;
+
+  if ((err = dht11.read(pinDHT11, &temperature, &humidity, NULL)) != SimpleDHTErrSuccess)
+  {
+    results[0] = -1;
+    results[1] = -1;
+    return results;
+  }
+
+  results[0] = (int)temperature;
+  results[1] = (int)humidity;
+  return results;
+}
 
 String readFromSensorsAsJson()
 {
-  int soilMoistureValue = analogRead(A0);
-  float humidity = dht.readHumidity();
-  float temperature = dht.readTemperature();
+  String jsonMessage;
 
-  if (isnan(humidity) || isnan(temperature))
-  {
-    String error = "{\"errorCode\": \"READ_ERROR_DHT\"}";
-    return error;
-  }
+  int *dht11Value = new int[2];
+  int soilMoistureValue01 = readFromSoilMoistureSensor(pinSoilMoisture01);
+  int soilMoistureValue02 = readFromSoilMoistureSensor(pinSoilMoisture02);
+  dht11Value = readFromDHT11Sensor(dht11Value);
 
-  String jsonMessage = "[{\"reading\": ";
-  jsonMessage += soilMoistureValue;
-  jsonMessage += ", \"readingType\": SOIL_MOISTURE}, ";
+  JsonArray &jsonArray = jsonBuffer.createArray();
 
-  jsonMessage += "{\"reading\": ";
-  jsonMessage += humidity;
-  jsonMessage += ", \"readingType\": HUMIDITY}, ";
+  JsonObject &soilMoistureReading01 = jsonBuffer.createObject();
+  soilMoistureReading01["sensor"] = "SOIL_MOISTURE";
+  soilMoistureReading01["value"] = soilMoistureValue01;
+  soilMoistureReading01["sensorIndex"] = 1;
+  soilMoistureReading01["unit"] = "%";
+  jsonArray.add(soilMoistureReading01);
 
-  jsonMessage += "{\"reading\": ";
-  jsonMessage += temperature;
-  jsonMessage += ", \"readingType\": TEMPERATURE}]";
+  JsonObject &soildMoistureReading02 = jsonBuffer.createObject();
+  soildMoistureReading02["sensor"] = "SOIL_MOISTURE";
+  soildMoistureReading02["value"] = soilMoistureValue02;
+  soildMoistureReading02["sensorIndex"] = 2;
+  soildMoistureReading02["unit"] = "%";
+  jsonArray.add(soildMoistureReading02);
 
+  JsonObject &temperatureReading01 = jsonBuffer.createObject();
+  temperatureReading01["sensor"] = "TEMPERATURE";
+  temperatureReading01["value"] = dht11Value[0];
+  temperatureReading01["sensorIndex"] = 1;
+  temperatureReading01["unit"] = "C";
+  jsonArray.add(temperatureReading01);
+
+  JsonObject &humidityReading01 = jsonBuffer.createObject();
+  humidityReading01["sensor"] = "HUMIDITY";
+  humidityReading01["value"] = dht11Value[1];
+  humidityReading01["sensorIndex"] = 1;
+  humidityReading01["unit"] = "%";
+  jsonArray.add(humidityReading01);
+
+  jsonArray.printTo(jsonMessage);
   return jsonMessage;
 }
 
@@ -68,16 +109,12 @@ void postSensorReadings()
 
 void OTASetup()
 {
-  Serial.begin(115200);
-  Serial.println();
-  Serial.println("Booting Sketch...");
   WiFi.mode(WIFI_AP_STA);
   WiFi.begin(ssid, password);
 
   while (WiFi.waitForConnectResult() != WL_CONNECTED)
   {
     WiFi.begin(ssid, password);
-    Serial.println("WiFi failed, retrying.");
   }
 
   MDNS.begin(host);
@@ -85,7 +122,6 @@ void OTASetup()
   httpUpdater.setup(&httpServer);
 
   MDNS.addService("http", "tcp", 80);
-  Serial.printf("HTTPUpdateServer ready! Open http://%s.local/update in your browser\n", host);
 }
 
 void webServerSetup()
@@ -98,16 +134,20 @@ void plantManagerServerSetup()
   http.begin("http://192.168.1.100:3000/sensor");
 }
 
-void dhtSensorSetup()
+void soilMoistureSetup()
 {
-  dht.begin();
+  pinMode(pinSoilMoisture01, OUTPUT);
+  pinMode(pinSoilMoisture02, OUTPUT);
+
+  digitalWrite(pinSoilMoisture01, LOW);
+  digitalWrite(pinSoilMoisture02, LOW);
 }
 
 void setup(void)
 {
-  pinMode(ledPin, OUTPUT);
   OTASetup();
   webServerSetup();
+  soilMoistureSetup();
 
   httpServer.begin();
 }
