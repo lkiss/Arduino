@@ -6,6 +6,8 @@
 #include <ESP8266HTTPClient.h>
 #include <SimpleDHT.h>
 #include <ArduinoJson.h>
+#include "Timer.h"
+#include <ESPMail.h>
 
 int pinDHT11 = 14;
 int pinSoilMoisture01 = 4;
@@ -15,25 +17,48 @@ int pinWaterPump02 = 13;
 int pinWaterSensor = 16;
 
 long wateringTime = 2000;
-long delayAfterWatering = 15000;
+long timeBetweenWatering = 60000 * 15;
 int soilMoistureDryValue = 850;
 int soilMoistureWetValue = 600;
 int soilMoistureMiddleValue = 725;
 
+Timer timer;
 SimpleDHT11 dht11;
+ESPMail mail;
 
 const char *host = "esp8266-webupdate";
 const char *ssid = "PNSC";
 const char *password = "5113111_Cons!";
-const String deviceId = "Device01";
+
+char *smtpServer = "smtp.gmail.com";
+int smtpServerPort = 587;
+char *smtpUser = "kisslac88@gmail.com";
+char *smtpPassword = "5113111_Cons";
+char *deviceId = "Device01";
 
 ESP8266WebServer httpServer(80);
 ESP8266HTTPUpdateServer httpUpdater;
 HTTPClient http;
 DynamicJsonBuffer jsonBuffer(200);
 
+void sendEmail(char* subject, char* emailFrom, char* emailTo, char* cc, char* bcc, char* body)
+{
+  mail.setSubject(emailFrom, subject);
+  mail.addTo(emailTo);
+  mail.addCC(cc);
+  mail.addBCC(bcc);
+
+  mail.setBody(body);
+
+  if (mail.send(smtpServer, smtpServerPort, smtpUser, smtpPassword) == 0)
+  {
+    //Send log
+  }
+}
+
 int readFromSoilMoistureSensor(int poweringPin)
 {
+  //Log debug
   int result = 0;
   digitalWrite(poweringPin, HIGH);
   delay(50);
@@ -45,6 +70,7 @@ int readFromSoilMoistureSensor(int poweringPin)
 
 bool isWateringNeeded(int soilMoisturePin)
 {
+  //Log debug
   int soilMoistureValue = readFromSoilMoistureSensor(soilMoisturePin);
   if (soilMoistureValue >= soilMoistureDryValue)
   {
@@ -62,6 +88,7 @@ bool isWateringNeeded(int soilMoisturePin)
 
 int *readFromDHT11Sensor(int *results)
 {
+  //Log debug
   byte temperature = 0;
   byte humidity = 0;
   int err = SimpleDHTErrSuccess;
@@ -84,23 +111,35 @@ bool canActivateWaterPump()
 
   if (isWateringAllowed == 1)
   {
+    //Log debug
     return true;
   }
-  return false;
+  else
+  {
+    sendEmail("Water tank empty!", "wateringsystem@watering.com", "kisslac1988@hotmail.com", "", "", "Please refill water tank!");
+    //Log warning
+    return false;
+  }
 }
 
 void activateWaterPump(int waterPumpPin)
 {
   if (canActivateWaterPump())
   {
+    //Log debug
     digitalWrite(waterPumpPin, LOW);
     delay(wateringTime);
     digitalWrite(waterPumpPin, HIGH);
+  }
+  else
+  {
+    //Log warning
   }
 }
 
 String getSensorReadingsAsJson()
 {
+  //Log debug
   String jsonMessage;
 
   int *dht11Value = new int[2];
@@ -152,6 +191,23 @@ void handleWaterPumpRequest()
   activateWaterPump(pinWaterPump01);
   activateWaterPump(pinWaterPump02);
   httpServer.send(200);
+}
+
+void water()
+{
+  //Log debug
+  bool isWateringNeeded01 = isWateringNeeded(pinSoilMoisture01);
+  bool isWateringNeeded02 = isWateringNeeded(pinSoilMoisture02);
+
+  if (isWateringNeeded01 == true)
+  {
+    activateWaterPump(pinWaterPump01);
+  }
+
+  if (isWateringNeeded02 == true)
+  {
+    activateWaterPump(pinWaterPump02);
+  }
 }
 
 void postSensorReadings()
@@ -216,25 +272,13 @@ void setup(void)
   soilMoistureSetup();
   waterPumpAndSensorSetup();
 
+  mail.begin();
   httpServer.begin();
+  timer.every(timeBetweenWatering, water);
 }
 
 void loop(void)
 {
   httpServer.handleClient();
-
-  bool isWateringNeeded01 = isWateringNeeded(pinSoilMoisture01);
-  bool isWateringNeeded02 = isWateringNeeded(pinSoilMoisture02);
-
-  if (isWateringNeeded01 == true)
-  {
-    activateWaterPump(pinWaterPump01);
-  }
-
-  if (isWateringNeeded02 == true)
-  {
-    activateWaterPump(pinWaterPump02);
-  }
-
-  delay(delayAfterWatering);
+  timer.update();
 }
