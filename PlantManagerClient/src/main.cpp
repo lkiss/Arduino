@@ -6,8 +6,8 @@
 #include <ESP8266HTTPClient.h>
 #include <SimpleDHT.h>
 #include <ArduinoJson.h>
-#include "Timer.h"
-#include <ESPMail.h>
+#include <Timer.h>
+#include <Gsender.h>
 
 int pinDHT11 = 14;
 int pinSoilMoisture01 = 4;
@@ -17,42 +17,38 @@ int pinWaterPump02 = 13;
 int pinWaterSensor = 16;
 
 long wateringTime = 2000;
-long timeBetweenWatering = 60000 * 15;
+long timeBetweenWatering = 60000 * 30;
 int soilMoistureDryValue = 850;
 int soilMoistureWetValue = 600;
 int soilMoistureMiddleValue = 725;
 
 Timer timer;
 SimpleDHT11 dht11;
-ESPMail mail;
 
 const char *host = "esp8266-webupdate";
 const char *ssid = "PNSC";
 const char *password = "5113111_Cons!";
 
-char *smtpServer = "smtp.gmail.com";
-int smtpServerPort = 587;
-char *smtpUser = "kisslac88@gmail.com";
-char *smtpPassword = "5113111_Cons";
-char *deviceId = "Device01";
+String smtpUser = "kisslac88@gmail.com";
+String smtpPassword = "5113111_Cons";
+String deviceId = "Device01";
 
 ESP8266WebServer httpServer(80);
 ESP8266HTTPUpdateServer httpUpdater;
 HTTPClient http;
 DynamicJsonBuffer jsonBuffer(200);
 
-void sendEmail(char* subject, char* emailFrom, char* emailTo, char* cc, char* bcc, char* body)
+void sendEmail(String subject, String emailTo, String body)
 {
-  mail.setSubject(emailFrom, subject);
-  mail.addTo(emailTo);
-  mail.addCC(cc);
-  mail.addBCC(bcc);
-
-  mail.setBody(body);
-
-  if (mail.send(smtpServer, smtpServerPort, smtpUser, smtpPassword) == 0)
+  Gsender *gsender = Gsender::Instance();
+  if (gsender->Subject(subject)->Send(emailTo, body))
   {
-    //Send log
+    Serial.println("Message send.");
+  }
+  else
+  {
+    Serial.print("Error sending message: ");
+    Serial.println(gsender->getError());
   }
 }
 
@@ -116,7 +112,7 @@ bool canActivateWaterPump()
   }
   else
   {
-    sendEmail("Water tank empty!", "wateringsystem@watering.com", "kisslac1988@hotmail.com", "", "", "Please refill water tank!");
+    sendEmail("Water tank empty!", "kisslac1988@hotmail.com", "Please refill water tank!");
     //Log warning
     return false;
   }
@@ -272,7 +268,6 @@ void setup(void)
   soilMoistureSetup();
   waterPumpAndSensorSetup();
 
-  mail.begin();
   httpServer.begin();
   timer.every(timeBetweenWatering, water);
 }
