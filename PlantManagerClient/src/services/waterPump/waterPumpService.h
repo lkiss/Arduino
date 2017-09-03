@@ -8,7 +8,7 @@ class WaterPumpService
     int waterPumpPin = 0;
 
   public:
-    WaterPumpService(int waterPumpPin, int waterSensorPin);
+    WaterPumpService(int *waterPumpPin, int *waterSensorPin);
     bool canActivateWaterPump();
-    void activateWaterPump();
+    bool activateWaterPump();
 };

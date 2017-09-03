@@ -2,20 +2,21 @@
 
 #include "soilMoistureService.h"
 
-SoilMoistureService::SoilMoistureService(int soilMoisturePin){
-  pinMode(soilMoisturePin, OUTPUT);
-  digitalWrite(soilMoisturePin, LOW);
-  this->soilMoisturePin = soilMoisturePin;
+SoilMoistureService::SoilMoistureService(int *soilMoisturePin)
+{
+  pinMode(*soilMoisturePin, OUTPUT);
+  digitalWrite(*soilMoisturePin, LOW);
+  this->soilMoisturePin = *soilMoisturePin;
 }
 
 int SoilMoistureService::read()
 {
   //Log debug
   int result = 0;
-  digitalWrite(soilMoisturePin, HIGH);
+  digitalWrite(this->soilMoisturePin, HIGH);
   delay(50);
   result = analogRead(A0);
-  digitalWrite(soilMoisturePin, LOW);
+  digitalWrite(this->soilMoisturePin, LOW);
   delay(50);
   return result;
 }

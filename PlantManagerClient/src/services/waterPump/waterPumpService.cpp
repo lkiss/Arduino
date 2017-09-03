@@ -1,21 +1,19 @@
 #include <Arduino.h>
 
 #include "waterPumpService.h"
-#include "../email/emailService.h"
 
-EmailService emailService;
-
-WaterPumpService::WaterPumpService(int waterPumpPin, int waterSensorPin)
+WaterPumpService::WaterPumpService(int *waterPumpPin, int *waterSensorPin)
 {
-    pinMode(waterSensorPin, INPUT);
-    pinMode(waterPumpPin, OUTPUT);
-    this->waterSensorPin = waterSensorPin;
-    this->waterPumpPin = waterPumpPin;
+    pinMode(*waterSensorPin, INPUT);
+    pinMode(*waterPumpPin, OUTPUT);
+    digitalWrite(*waterPumpPin, HIGH);
+    this->waterSensorPin = *waterSensorPin;
+    this->waterPumpPin = *waterPumpPin;
 }
 
 bool WaterPumpService::canActivateWaterPump()
 {
-    int isWateringAllowed = digitalRead(waterSensorPin);
+    int isWateringAllowed = digitalRead(this->waterSensorPin);
 
     if (isWateringAllowed == 1)
     {
@@ -24,23 +22,24 @@ bool WaterPumpService::canActivateWaterPump()
     }
     else
     {
-        emailService.sendEmail("Water tank empty!", "kisslac1988@hotmail.com", "Please refill water tank!");
         //Log warning
         return false;
     }
 }
 
-void WaterPumpService::activateWaterPump()
+bool WaterPumpService::activateWaterPump()
 {
     if (this->canActivateWaterPump())
     {
         //Log debug
-        digitalWrite(waterPumpPin, LOW);
+        digitalWrite(this->waterPumpPin, LOW);
         delay(wateringTime);
-        digitalWrite(waterPumpPin, HIGH);
+        digitalWrite(this->waterPumpPin, HIGH);
+        return true;
     }
     else
     {
         //Log warning
+        return false;
     }
 }

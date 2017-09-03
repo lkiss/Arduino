@@ -7,7 +7,7 @@ private:
   int soilMoisturePin = 0;
 
 public:
-  SoilMoistureService(int soilMoisturePin);
+  SoilMoistureService(int *soilMoisturePin);
   int read();
   bool isWateringNeeded();
 };
