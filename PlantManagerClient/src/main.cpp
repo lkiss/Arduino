@@ -10,6 +10,7 @@
 #include "./services/otaServer/otaServerService.h"
 #include "./services/json/jsonService.h"
 #include "./services/email/emailService.h"
+#include "./services/config/configService.h"
 
 int DHT11Pin = 14;
 int soilMoisturePin01 = 4;
@@ -30,6 +31,7 @@ WaterPumpService waterPumpService02(&waterPumpPin02, &waterSensorPin);
 EmailService emailService;
 WifiService wifiService;
 JsonService jsonService;
+ConfigService configService;
 
 String getSensorReadingsAsJson()
 {
@@ -72,8 +74,19 @@ void handleInfoRequest()
 
 void handleConfigRequest()
 {
-
-  webServer.send(200);
+  String jsonMessage;
+  Configuration config = configService.getConfiguration();
+  jsonMessage = jsonService.convertConfigToJson(config.measuringInterval,
+                                                config.wateringTime,
+                                                config.smptPort,
+                                                config.smtpServer,
+                                                config.base64UserId,
+                                                config.base64Password,
+                                                config.emailTo,
+                                                config.emailFrom,
+                                                config.emailSubject,
+                                                config.emailBody);
+  webServer.send(200, "application/json", jsonMessage);
 }
 
 void routingSetup()

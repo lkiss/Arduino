@@ -33,3 +33,35 @@ String JsonService::convertSensorReadingsToJson(int soilMoistureReadings[2], int
     jsonArray.printTo(jsonMessage);
     return jsonMessage;
 }
+
+String JsonService::convertConfigToJson(
+    int measuringInterval,
+    int wateringTime,
+    int smtpPort,
+    String smptServer,
+    String base64UserId,
+    String base64Password,
+    String emailTo,
+    String emailFrom,
+    String emailSubject,
+    String emailBody)
+{
+    String jsonMessage;
+    DynamicJsonBuffer buffer(200);
+
+    JsonObject &config = buffer.createObject();
+    config["measuringInterval"] = measuringInterval;
+    config["wateringTime"] = wateringTime;
+    config["smtpPort"] = smtpPort;
+    config["smptServer"] = smptServer;
+    // config["base64UserId"] = base64UserId;
+    // config["base64Password"] = base64Password;
+    config["emailTo"] = emailTo;
+    config["emailFrom"] = emailFrom;
+    config["emailSubject"] = emailSubject;
+    config["emailBody"] = emailBody;
+
+    config.printTo(jsonMessage);
+
+    return jsonMessage;
+}
