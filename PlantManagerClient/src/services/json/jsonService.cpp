@@ -1,6 +1,6 @@
-#include "./jsonBuilderService.h"
+#include "./jsonService.h"
 
-String JsonBuilderService::convertSensorReadingsToJson(int soilMoistureReadings[2], int *dht11Readings)
+String JsonService::convertSensorReadingsToJson(int soilMoistureReadings[2], int *dht11Readings)
 {
     String jsonMessage;
     DynamicJsonBuffer buffer(200);

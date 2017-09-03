@@ -8,7 +8,7 @@
 #include "./services/waterPump/waterPumpService.h"
 #include "./services/wifi/wifiService.h"
 #include "./services/otaServer/otaServerService.h"
-#include "./services/jsonBuilder/jsonBuilderService.h"
+#include "./services/json/jsonService.h"
 #include "./services/email/emailService.h"
 
 int DHT11Pin = 14;
@@ -29,7 +29,7 @@ WaterPumpService waterPumpService01(&waterPumpPin01, &waterSensorPin);
 WaterPumpService waterPumpService02(&waterPumpPin02, &waterSensorPin);
 EmailService emailService;
 WifiService wifiService;
-JsonBuilderService jsonBuilderService;
+JsonService jsonService;
 
 String getSensorReadingsAsJson()
 {
@@ -40,7 +40,7 @@ String getSensorReadingsAsJson()
   soilMoistureReadings[1] = soilMoistureService02.read();
   dht11Service.read(dht11Readings);
 
-  return jsonBuilderService.convertSensorReadingsToJson(soilMoistureReadings, dht11Readings);
+  return jsonService.convertSensorReadingsToJson(soilMoistureReadings, dht11Readings);
 }
 
 void water()
@@ -70,10 +70,17 @@ void handleInfoRequest()
   webServer.send(200);
 }
 
+void handleConfigRequest()
+{
+
+  webServer.send(200);
+}
+
 void routingSetup()
 {
   webServer.on("/sensor", handleSensorRequest);
   webServer.on("/waterpump", handleWaterPumpRequest);
+  webServer.on("/config", handleConfigRequest);
   webServer.on("/info", handleInfoRequest);
 }
 
