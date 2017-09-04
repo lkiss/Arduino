@@ -66,12 +66,12 @@ Configuration JsonService::convertJsonToConfig(String configJson)
     configuration.wateringTime = config["wateringTime"];
     configuration.smtpPort = config["smtpPort"];
     configuration.smtpServer = config["smtpServer"].as<String>();
-    configuration.base64UserId = config["base64UserId"];
-    configuration.base64Password = config["base64Password"];
-    configuration.emailTo = config["emailTo"];
-    configuration.emailFrom = config["emailFrom"];
-    configuration.emailSubject = config["emailSubject"];
-    configuration.emailBody = config["emailBody"];
+    configuration.base64UserId = config["base64UserId"].as<String>();
+    configuration.base64Password = config["base64Password"].as<String>();
+    configuration.emailTo = config["emailTo"].as<String>();
+    configuration.emailFrom = config["emailFrom"].as<String>();
+    configuration.emailSubject = config["emailSubject"].as<String>();
+    configuration.emailBody = config["emailBody"].as<String>();
 
     return configuration;
 }

@@ -16,19 +16,20 @@ ConfigService::ConfigService()
 
 String ConfigService::getConfiguration()
 {
-  String fileContent;
+  // String fileContent;
 
-  fileContent = fileService.readConfigurationFromFile();
+  // fileContent = fileService.readConfigurationFromFile();
 
-  if (fileContent == "")
-  {
-    return jsonService.convertConfigToJson(this->config);
-  }
-  else
-  {
-    return fileContent;
-    ;
-  }
+  // if (fileContent == "")
+  // {
+  //   return jsonService.convertConfigToJson(this->config);
+  // }
+  // else
+  // {
+  //   return fileContent;
+  // }
+
+  return jsonService.convertConfigToJson(this->config);
 }
 
 void ConfigService::setConfiguration(String config)

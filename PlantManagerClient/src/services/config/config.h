@@ -7,12 +7,12 @@ struct Configuration
   int wateringTime;
   int smtpPort;
   String smtpServer;
-  const char * base64UserId;
-  const char * base64Password;
-  const char * emailTo;
-  const char * emailFrom;
-  const char * emailSubject;
-  const char * emailBody;
+  String base64UserId;
+  String base64Password;
+  String emailTo;
+  String emailFrom;
+  String emailSubject;
+  String emailBody;
 };
 
 #endif
