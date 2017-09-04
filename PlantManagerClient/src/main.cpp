@@ -59,6 +59,7 @@ void water()
 
 void handleSensorRequest()
 {
+  Serial.print("Handling Sensor Request");
   webServer.send(200, "application/json", getSensorReadingsAsJson());
 }
 
@@ -72,33 +73,38 @@ void handleInfoRequest()
   webServer.send(200);
 }
 
-void handleConfigRequest()
+void handleGetConfigRequest()
 {
   String jsonMessage;
-  Configuration config = configService.getConfiguration();
-  jsonMessage = jsonService.convertConfigToJson(config.measuringInterval,
-                                                config.wateringTime,
-                                                config.smptPort,
-                                                config.smtpServer,
-                                                config.base64UserId,
-                                                config.base64Password,
-                                                config.emailTo,
-                                                config.emailFrom,
-                                                config.emailSubject,
-                                                config.emailBody);
+  jsonMessage = configService.getConfiguration();
   webServer.send(200, "application/json", jsonMessage);
+}
+
+void handlePutConfigRequest()
+{
+  if (webServer.hasArg("plain") == false)
+  {
+    webServer.send(200, "text/plain", "Body not received");
+    return;
+  }
+
+  configService.setConfiguration(webServer.arg("plain"));
+
+  webServer.send(200);
 }
 
 void routingSetup()
 {
-  webServer.on("/sensor", handleSensorRequest);
-  webServer.on("/waterpump", handleWaterPumpRequest);
-  webServer.on("/config", handleConfigRequest);
-  webServer.on("/info", handleInfoRequest);
+  webServer.on("/sensor", HTTP_GET, handleSensorRequest);
+  webServer.on("/waterpump", HTTP_GET, handleWaterPumpRequest);
+  webServer.on("/config", HTTP_GET, handleGetConfigRequest);
+  webServer.on("/config", HTTP_PUT, handlePutConfigRequest);
+  webServer.on("/info", HTTP_GET, handleInfoRequest);
 }
 
 void setup(void)
 {
+  Serial.begin(115200);  
   wifiService.begin();
   webServer.begin();
   routingSetup();

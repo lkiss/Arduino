@@ -34,34 +34,44 @@ String JsonService::convertSensorReadingsToJson(int soilMoistureReadings[2], int
     return jsonMessage;
 }
 
-String JsonService::convertConfigToJson(
-    int measuringInterval,
-    int wateringTime,
-    int smtpPort,
-    String smptServer,
-    String base64UserId,
-    String base64Password,
-    String emailTo,
-    String emailFrom,
-    String emailSubject,
-    String emailBody)
+String JsonService::convertConfigToJson(Configuration configuration)
 {
     String jsonMessage;
     DynamicJsonBuffer buffer(200);
 
     JsonObject &config = buffer.createObject();
-    config["measuringInterval"] = measuringInterval;
-    config["wateringTime"] = wateringTime;
-    config["smtpPort"] = smtpPort;
-    config["smptServer"] = smptServer;
-    // config["base64UserId"] = base64UserId;
-    // config["base64Password"] = base64Password;
-    config["emailTo"] = emailTo;
-    config["emailFrom"] = emailFrom;
-    config["emailSubject"] = emailSubject;
-    config["emailBody"] = emailBody;
+    config["measuringInterval"] = configuration.measuringInterval;
+    config["wateringTime"] = configuration.wateringTime;
+    config["smtpPort"] = configuration.smtpPort;
+    config["smtpServer"] = configuration.smtpServer;
+    config["emailTo"] = configuration.emailTo;
+    config["emailFrom"] = configuration.emailFrom;
+    config["emailSubject"] = configuration.emailSubject;
+    config["emailBody"] = configuration.emailBody;
 
     config.printTo(jsonMessage);
 
     return jsonMessage;
+}
+
+Configuration JsonService::convertJsonToConfig(String configJson)
+{
+    Configuration configuration = Configuration();
+    String jsonMessage;
+    DynamicJsonBuffer buffer(200);
+
+    JsonObject &config = buffer.parseObject(configJson);
+
+    configuration.measuringInterval = config["measuringInterval"];
+    configuration.wateringTime = config["wateringTime"];
+    configuration.smtpPort = config["smtpPort"];
+    configuration.smtpServer = config["smtpServer"].as<String>();
+    configuration.base64UserId = config["base64UserId"];
+    configuration.base64Password = config["base64Password"];
+    configuration.emailTo = config["emailTo"];
+    configuration.emailFrom = config["emailFrom"];
+    configuration.emailSubject = config["emailSubject"];
+    configuration.emailBody = config["emailBody"];
+
+    return configuration;
 }
