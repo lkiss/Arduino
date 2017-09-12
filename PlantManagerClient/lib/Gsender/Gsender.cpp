@@ -48,6 +48,13 @@ const char* Gsender::getError()
   return _error;
 }
 
+void Gsender::UpdateSmptSettings(const char* smtpServer, const char* base64SmtpUserName, const char* base64SmtpPassword, const char* emailFrom){
+  this->SMTP_SERVER = smtpServer;
+  this->SMTP_SERVER = smtpServer;
+  this->SMTP_SERVER = smtpServer;
+  this->SMTP_SERVER = smtpServer;
+}
+
 bool Gsender::Send(const String &to, const String &message)
 {
   WiFiClientSecure client;

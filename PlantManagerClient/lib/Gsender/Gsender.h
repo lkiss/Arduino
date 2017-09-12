@@ -27,6 +27,7 @@ class Gsender
 
     public:
         static Gsender* Instance();
+        void UpdateSmptSettings(const char* smtpServer, const char* base64SmtpUserName, const char* base64SmtpPassword, const char* emailFrom);
         Gsender* Subject(const char* subject);
         Gsender* Subject(const String &subject);
         bool Send(const String &to, const String &message);

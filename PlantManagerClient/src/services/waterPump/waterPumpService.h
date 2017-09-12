@@ -11,4 +11,5 @@ class WaterPumpService
     WaterPumpService(int *waterPumpPin, int *waterSensorPin);
     bool canActivateWaterPump();
     bool activateWaterPump();
+    void updateWateringTime(int newWateringTime);
 };

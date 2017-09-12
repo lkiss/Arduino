@@ -12,6 +12,9 @@ private:
 
 public:
   ConfigService();
-  String getConfiguration();
-  void setConfiguration(String config);
+  String getConfigurationJson();
+  void setConfigurationJson(String config);
+
+  Configuration getConfiguration();
+  void setConfiguration(Configuration config);
 };

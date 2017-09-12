@@ -18,7 +18,8 @@ int soilMoisturePin02 = 5;
 int waterPumpPin01 = 12;
 int waterPumpPin02 = 13;
 int waterSensorPin = 16;
-long timeBetweenMeasuring = 60000 * 30; //30 minutes
+long measuringInterval = 60000 * 30; //30 minutes
+int measureIntervalTimerId = -1;
 
 Timer timer;
 ESP8266WebServer webServer(80);
@@ -53,7 +54,7 @@ void water()
 
   if (result == false)
   {
-    emailService.sendEmail("Water tank empty!", "kisslac1988@hotmail.com", "Please refill water tank!");
+    emailService.SendEmail("Water tank empty!", "kisslac1988@hotmail.com", "Please refill water tank!");
   }
 }
 
@@ -76,8 +77,21 @@ void handleInfoRequest()
 void handleGetConfigRequest()
 {
   String jsonMessage;
-  jsonMessage = configService.getConfiguration();
+  jsonMessage = configService.getConfigurationJson();
   webServer.send(200, "application/json", jsonMessage);
+}
+
+void updateMeasureTimerInterval(int measuringInterval){
+  if(measureIntervalTimerId != -1){
+    timer.stop(measureIntervalTimerId);
+  }
+  measureIntervalTimerId = timer.every(measuringInterval, water);
+}
+
+void setupFromConfig(){
+  Configuration config = configService.getConfiguration();
+
+  updateMeasureTimerInterval(config.measuringInterval);
 }
 
 void handlePutConfigRequest()
@@ -88,7 +102,9 @@ void handlePutConfigRequest()
     return;
   }
 
-  configService.setConfiguration(webServer.arg("plain"));
+  configService.setConfigurationJson(webServer.arg("plain"));
+
+  setupFromConfig();
 
   webServer.send(200);
 }
@@ -102,6 +118,7 @@ void routingSetup()
   webServer.on("/info", HTTP_GET, handleInfoRequest);
 }
 
+
 void setup(void)
 {
   Serial.begin(115200);  
@@ -109,7 +126,9 @@ void setup(void)
   webServer.begin();
   routingSetup();
 
-  timer.every(timeBetweenMeasuring, water);
+  Configuration config = configService.getConfiguration();
+
+  updateMeasureTimerInterval(config.measuringInterval);
 }
 
 void loop(void)

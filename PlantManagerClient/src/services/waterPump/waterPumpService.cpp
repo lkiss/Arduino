@@ -6,7 +6,7 @@ WaterPumpService::WaterPumpService(int *waterPumpPin, int *waterSensorPin)
 {
     pinMode(*waterSensorPin, INPUT);
     pinMode(*waterPumpPin, OUTPUT);
-    digitalWrite(*waterPumpPin, HIGH);
+    digitalWrite(*waterPumpPin, LOW);
     this->waterSensorPin = *waterSensorPin;
     this->waterPumpPin = *waterPumpPin;
 }
@@ -32,9 +32,9 @@ bool WaterPumpService::activateWaterPump()
     if (this->canActivateWaterPump())
     {
         //Log debug
-        digitalWrite(this->waterPumpPin, LOW);
-        delay(wateringTime);
         digitalWrite(this->waterPumpPin, HIGH);
+        delay(wateringTime);
+        digitalWrite(this->waterPumpPin, LOW);
         return true;
     }
     else
@@ -42,4 +42,8 @@ bool WaterPumpService::activateWaterPump()
         //Log warning
         return false;
     }
+}
+
+void WaterPumpService::updateWateringTime(int newWateringTime){
+    this->wateringTime = newWateringTime;
 }

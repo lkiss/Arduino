@@ -14,26 +14,22 @@ ConfigService::ConfigService()
   this->config.emailBody = "Refill water tank!";
 }
 
-String ConfigService::getConfiguration()
+String ConfigService::getConfigurationJson()
 {
-  // String fileContent;
-
-  // fileContent = fileService.readConfigurationFromFile();
-
-  // if (fileContent == "")
-  // {
-  //   return jsonService.convertConfigToJson(this->config);
-  // }
-  // else
-  // {
-  //   return fileContent;
-  // }
-
   return jsonService.convertConfigToJson(this->config);
 }
 
-void ConfigService::setConfiguration(String config)
+void ConfigService::setConfigurationJson(String config)
 {
-  //fileService.writeConfigurationFile(config);
   this->config = jsonService.convertJsonToConfig(config);
+}
+
+Configuration ConfigService::getConfiguration()
+{
+  return this->config;
+}
+
+void ConfigService::setConfiguration(Configuration config)
+{
+  this->config = config;
 }
