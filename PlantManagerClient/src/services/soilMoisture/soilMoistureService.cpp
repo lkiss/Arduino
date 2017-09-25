@@ -9,6 +9,13 @@ SoilMoistureService::SoilMoistureService(int *soilMoisturePin)
   this->soilMoisturePin = *soilMoisturePin;
 }
 
+bool SoilMoistureService::isValidMoistureTreshold(int moistureTreshold){
+  if(moistureTreshold > 1024 || moistureTreshold < 0){
+    return false;
+  }
+  return true;
+}
+
 int SoilMoistureService::read()
 {
   //Log debug
@@ -21,15 +28,23 @@ int SoilMoistureService::read()
   return result;
 }
 
+void SoilMoistureService::updateMoistureTresholds(int newDryTreshold, int newMiddleTreshold, int newWetTreshold){
+  if(this->isValidMoistureTreshold(dryTreshold) && this->isValidMoistureTreshold(middleTreshold) && this->isValidMoistureTreshold(wetTreshold)){
+    this->soilMoistureDryTreshold = dryTreshold;
+    this->soilMoistureWetTreshold = wetTreshold;
+    this->soilMoistureMiddleTreshold = middleTreshold;
+  }
+}
+
 bool SoilMoistureService::isWateringNeeded()
 {
   //Log debug
-  int soilMoistureValue = this->read();
-  if (soilMoistureValue >= soilMoistureDryValue)
+  int soilMoistureTreshold = this->read();
+  if (soilMoistureTreshold >= soilMoistureDryTreshold)
   {
     return true;
   }
-  else if (soilMoistureValue >= soilMoistureMiddleValue)
+  else if (soilMoistureTreshold >= soilMoistureMiddleTreshold)
   {
     return true;
   }
