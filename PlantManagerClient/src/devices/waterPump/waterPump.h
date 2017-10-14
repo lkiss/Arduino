@@ -1,6 +1,6 @@
 #include <Arduino.h>
 
-class WaterPumpService
+class WaterPump
 {
   private:
     long wateringTime = 2000;
@@ -8,7 +8,7 @@ class WaterPumpService
     int waterPumpPin = 0;
 
   public:
-    WaterPumpService(int *waterPumpPin, int *waterSensorPin);
+    WaterPump(int *waterPumpPin, int *waterSensorPin);
     bool canActivateWaterPump();
     bool activateWaterPump();
     void updateWateringTime(int newWateringTime);

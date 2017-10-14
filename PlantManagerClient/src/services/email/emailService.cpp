@@ -5,20 +5,22 @@ EmailService::EmailService()
   this->gsender = Gsender::Instance();
 }
 
-void EmailService::SendEmail(char *subject, char *emailTo, char *body)
+bool EmailService::SendEmail(char *subject, char *emailTo, char *body)
 {
   if (this->gsender->Subject(subject)->Send(emailTo, body))
   {
-    Serial.println("Message send.");
+    Serial.println("Message sent.");
+    return true;
   }
   else
   {
     Serial.print("Error sending message: ");
     Serial.println(this->gsender->getError());
+    return false;
   }
 }
 
-void EmailService::UpdateSmtpSettings(const char *smtpServer, const char *base64SmtpUserName, const char *base64SmtpPassword, const char *emailFrom)
+void EmailService::UpdateSmtpSettings(const char *smtpServer, int port, const char *base64SmtpUserName, const char *base64SmtpPassword, const char *emailFrom)
 {
-  this->gsender->UpdateSmptSettings(smtpServer, base64SmtpUserName, base64SmtpPassword, emailFrom);
+  this->gsender->UpdateSmptSettings(smtpServer, port, base64SmtpUserName, base64SmtpPassword, emailFrom);
 }

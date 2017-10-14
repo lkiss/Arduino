@@ -1,14 +1,14 @@
 #include <SimpleDHT.h>
-#include "dht11Service.h"
+#include "TemperatureSensor.h"
 
 SimpleDHT11 dht11;
 
-DHT11Service::DHT11Service(int *DHT11Pin)
+TemperatureSensor::TemperatureSensor(int *DHT11Pin)
 {
   this->DHT11Pin = *DHT11Pin;
 }
 
-int *DHT11Service::read(int *result)
+int *TemperatureSensor::read(int *result)
 {
   byte temperature = 0;
   byte humidity = 0;

@@ -48,11 +48,12 @@ const char* Gsender::getError()
   return _error;
 }
 
-void Gsender::UpdateSmptSettings(const char* smtpServer, const char* base64SmtpUserName, const char* base64SmtpPassword, const char* emailFrom){
+void Gsender::UpdateSmptSettings(const char* smtpServer, int port, const char* base64SmtpUserName, const char* base64SmtpPassword, const char* emailFrom){
   this->SMTP_SERVER = smtpServer;
-  this->SMTP_SERVER = smtpServer;
-  this->SMTP_SERVER = smtpServer;
-  this->SMTP_SERVER = smtpServer;
+  this->SMTP_PORT = port;
+  this->EMAILBASE64_LOGIN = base64SmtpUserName;
+  this->EMAILBASE64_PASSWORD = base64SmtpPassword;
+  this->FROM = emailFrom;
 }
 
 bool Gsender::Send(const String &to, const String &message)

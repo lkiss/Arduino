@@ -1,9 +1,9 @@
-class DHT11Service
+class TemperatureSensor
 {
 private:
   int DHT11Pin;
 
 public:
-  DHT11Service(int *DHT11Pin);
+  TemperatureSensor(int *DHT11Pin);
   int *read(int *result);
 };

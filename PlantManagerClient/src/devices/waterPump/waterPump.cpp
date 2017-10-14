@@ -1,8 +1,8 @@
 #include <Arduino.h>
 
-#include "waterPumpService.h"
+#include "WaterPump.h"
 
-WaterPumpService::WaterPumpService(int *waterPumpPin, int *waterSensorPin)
+WaterPump::WaterPump(int *waterPumpPin, int *waterSensorPin)
 {
     pinMode(*waterSensorPin, INPUT);
     pinMode(*waterPumpPin, OUTPUT);
@@ -11,7 +11,7 @@ WaterPumpService::WaterPumpService(int *waterPumpPin, int *waterSensorPin)
     this->waterPumpPin = *waterPumpPin;
 }
 
-bool WaterPumpService::canActivateWaterPump()
+bool WaterPump::canActivateWaterPump()
 {
     int isWateringAllowed = digitalRead(this->waterSensorPin);
 
@@ -27,7 +27,7 @@ bool WaterPumpService::canActivateWaterPump()
     }
 }
 
-bool WaterPumpService::activateWaterPump()
+bool WaterPump::activateWaterPump()
 {
     if (this->canActivateWaterPump())
     {
@@ -44,6 +44,6 @@ bool WaterPumpService::activateWaterPump()
     }
 }
 
-void WaterPumpService::updateWateringTime(int newWateringTime){
+void WaterPump::updateWateringTime(int newWateringTime){
     this->wateringTime = newWateringTime;
 }

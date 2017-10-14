@@ -14,7 +14,7 @@ class Gsender
     protected:
         Gsender();
     private:
-        const int SMTP_PORT = 465;
+        int SMTP_PORT = 465;
         const char* SMTP_SERVER = "smtp.gmail.com";
         const char* EMAILBASE64_LOGIN = "a2lzc2xhYzg4QGdtYWlsLmNvbQ==";
         const char* EMAILBASE64_PASSWORD = "NTExMzExMV9Db25z";
@@ -27,7 +27,7 @@ class Gsender
 
     public:
         static Gsender* Instance();
-        void UpdateSmptSettings(const char* smtpServer, const char* base64SmtpUserName, const char* base64SmtpPassword, const char* emailFrom);
+        void UpdateSmptSettings(const char* smtpServer, int port, const char* base64SmtpUserName, const char* base64SmtpPassword, const char* emailFrom);
         Gsender* Subject(const char* subject);
         Gsender* Subject(const String &subject);
         bool Send(const String &to, const String &message);
