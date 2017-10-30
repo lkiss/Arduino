@@ -6,6 +6,8 @@ struct Configuration
   int measuringInterval;
   int wateringTime;
   int smtpPort;
+  int appServerPort;
+  String appServer;
   String smtpServer;
   String base64UserId;
   String base64Password;

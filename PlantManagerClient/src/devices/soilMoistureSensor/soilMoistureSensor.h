@@ -1,3 +1,6 @@
+#ifndef SOIL_MOISTURE_SENSOR
+#define SOIL_MOISTURE_SENSOR
+
 class SoilMoistureSensor
 {
 private:
@@ -8,8 +11,10 @@ private:
   bool isValidMoistureTreshold(int moistureTreshold);
 
 public:
+  SoilMoistureSensor();
   SoilMoistureSensor(int *soilMoisturePin);
   void updateTresholdValues(int newDryTreshold, int newWetTreshold);
-  int read();
   bool isDry();
+  int read();
 };
+#endif

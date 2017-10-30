@@ -3,6 +3,8 @@
 
 SimpleDHT11 dht11;
 
+TemperatureSensor::TemperatureSensor(){}
+
 TemperatureSensor::TemperatureSensor(int *DHT11Pin)
 {
   this->DHT11Pin = *DHT11Pin;

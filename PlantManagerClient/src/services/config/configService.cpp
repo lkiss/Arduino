@@ -2,9 +2,10 @@
 
 ConfigService::ConfigService()
 {
-  this->config.measuringInterval = 60000 * 30;
-  this->config.wateringTime = 2000;
+  this->config.measuringInterval = 10e6;
   this->config.smtpPort = 465;
+  this->config.appServer = "192.168.1.101";
+  this->config.appServerPort = 80;
   this->config.smtpServer = "smtp.gmail.com";
   this->config.base64UserId = "a2lzc2xhYzg4QGdtYWlsLmNvbQ==";
   this->config.base64Password = "NTExMzExMV9Db25z";
@@ -12,6 +13,13 @@ ConfigService::ConfigService()
   this->config.emailFrom = "kisslac88@gmail.com";
   this->config.emailSubject = "Water tank empty!";
   this->config.emailBody = "Refill water tank!";
+}
+
+ConfigService *ConfigService::getInstance()
+{
+  if (!instance)
+    instance = new ConfigService();
+  return instance;
 }
 
 String ConfigService::getConfigurationJson()

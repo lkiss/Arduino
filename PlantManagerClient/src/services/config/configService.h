@@ -1,17 +1,18 @@
 #include <Arduino.h>
 #include "config.h"
-#include "../file/fileService.h"
 #include "../json/jsonService.h"
 
 class ConfigService
 {
 private:
-  FileService fileService;
+  static ConfigService *instance;
   JsonService jsonService;
   Configuration config;
 
 public:
   ConfigService();
+  static ConfigService *getInstance();
+
   String getConfigurationJson();
   void setConfigurationJson(String config);
 

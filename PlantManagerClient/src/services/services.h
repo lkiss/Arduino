@@ -3,3 +3,4 @@
 #include "./json/jsonService.h"
 #include "./email/emailService.h"
 #include "./config/configService.h"
+#include "./sensor/sensorService.h"

@@ -1,15 +1,16 @@
 #include <Arduino.h>
-
+#ifndef WATER_PUMP_SENSOR
+#define WATER_PUMP_SENSOR
 class WaterPump
 {
-  private:
-    long wateringTime = 2000;
-    int waterSensorPin = 0;
-    int waterPumpPin = 0;
+private:
+  int waterPumpPin = 0;
+  int wateringTime = 3000;
 
-  public:
-    WaterPump(int *waterPumpPin, int *waterSensorPin);
-    bool canActivateWaterPump();
-    bool activateWaterPump();
-    void updateWateringTime(int newWateringTime);
+public:
+  WaterPump();
+  WaterPump(int *waterPumpPin);
+  bool activateWaterPump();
+  void updateWateringTime(int newWateringTime);
 };
+#endif
