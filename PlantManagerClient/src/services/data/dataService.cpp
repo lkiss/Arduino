@@ -1,6 +1,6 @@
 #include "dataService.h"
 
-int DataService::sendSensorReadings()
+int DataService::sendSensorReadings(SensorReading reading)
 {
     
 }

@@ -22,4 +22,6 @@ bool SensorService::water()
     {
         return false;
     }
+
+    this->waterPump.activateWaterPump();
 }

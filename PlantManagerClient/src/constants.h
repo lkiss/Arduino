@@ -1,3 +1,6 @@
+#ifndef CONSTANTS
+#define CONSTANTS
+
 #define PI 3.14159265358979323846
 
 enum WaterTankType
@@ -7,6 +10,17 @@ enum WaterTankType
     CUBE = 2
 };
 
+enum TemperatureUnitOfMeasure
+{
+    FAHRENHEIT = 0,
+    CELSIUS = 1
+};
+
+enum SoilMoistureUnitOfMeasurement
+{
+    PERCENTAGE = 0
+};
+
 struct DimensionsInMillimeters
 {
     double length;
@@ -14,3 +28,5 @@ struct DimensionsInMillimeters
     double height;
     double radius;
 };
+
+#endif

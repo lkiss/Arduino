@@ -25,8 +25,11 @@ SensorService sensorService(waterLevelSensor, waterPump, soilMoistureSensor);
 void setup(void)
 {
   Configuration config = configService.getConfiguration();
-  
-  wifiService.begin();
+
+  delay(5000);
+  //sensorService.water();
+  //wifiService.begin();
+  //waterPump.activateWaterPump();
 
   ESP.deepSleep(config.measuringInterval);
 }
