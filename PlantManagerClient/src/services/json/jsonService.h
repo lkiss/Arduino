@@ -3,11 +3,12 @@
 
 #include <ArduinoJson.h>
 #include "../config/config.h"
+#include "../sensor/sensorReading.h"
 
 class JsonService
 {
 public:
-  String convertSensorReadingsToJson(int soilMoistureReadings[2], int *dht11Readings);
+  String convertSensorReadingsToJson(SensorReading sensorReading);
   String convertConfigToJson(Configuration config);
   Configuration convertJsonToConfig(String configJson);
 };

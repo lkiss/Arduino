@@ -22,6 +22,9 @@
         "streambuf": "cpp",
         "tuple": "cpp",
         "typeinfo": "cpp",
-        "utility": "cpp"
+        "utility": "cpp",
+        "rope": "cpp",
+        "slist": "cpp",
+        "valarray": "cpp"
     }
 }

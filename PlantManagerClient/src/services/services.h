@@ -4,3 +4,4 @@
 #include "./email/emailService.h"
 #include "./config/configService.h"
 #include "./sensor/sensorService.h"
+#include "./data/dataService.h"

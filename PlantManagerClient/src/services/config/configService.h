@@ -1,3 +1,6 @@
+#ifndef CONFIG_SERVICE
+#define CONFIG_SERVICE
+
 #include <Arduino.h>
 #include "config.h"
 #include "../json/jsonService.h"
@@ -19,3 +22,5 @@ public:
   Configuration getConfiguration();
   void setConfiguration(Configuration config);
 };
+
+#endif
