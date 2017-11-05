@@ -7,6 +7,8 @@ struct SensorReading
     int humidity;
     int soilMoisture;
     int waterLevel;
+    const char* temperatureUnit;
+    const char* waterLevelUnit;
 };
 
 #endif

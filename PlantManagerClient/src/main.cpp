@@ -16,43 +16,30 @@ SoilMoistureSensor soilMoistureSensor(&soilMoisturePin);
 WaterPump waterPump(&waterPumpPin);
 WaterLevelSensor waterLevelSensor(&waterSensorTriggerPin, &waterSensorEchoPin);
 
-EmailService emailService;
 WifiService wifiService;
 JsonService jsonService;
 ConfigService configService;
-DataService dataService;
+DataService dataService(configService, jsonService);
 SensorService sensorService(waterLevelSensor, waterPump, soilMoistureSensor);
-
-HTTPClient httpClient;
 
 void setup(void)
 {
-  Configuration config = configService.getConfiguration();
-  //sensorService.water();
-  //waterPump.activateWaterPump();
   wifiService.begin();
+}
+
+void loop(void)
+{
+  Configuration config = configService.getConfiguration();
 
   SensorReading reading;
   reading.humidity = 100;
   reading.soilMoisture = 920;
   reading.temperature = 25;
   reading.waterLevel = 40;
+  reading.temperatureUnit = "C";
+  reading.waterLevelUnit = "%";
+  dataService.sendSensorReadings(reading);
+  // ESP.deepSleep(5 * 1000000);
 
-  // dataService.sendSensorReadings(reading);
-
-  // String jsonMessage = jsonService.convertSensorReadingsToJson(reading);
-
-  // httpClient.begin("192.168.1.100/szilahome/sensor");
-  // httpClient.addHeader("Content-Type", "application/json");
-
-  // int httpStatusCode = httpClient.POST(jsonMessage);
-  // httpClient.end();
-
-  // delay(10000);
-
-  //ESP.deepSleep(config.measuringInterval);
-}
-
-void loop(void)
-{
+  delay(10000);
 }

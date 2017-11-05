@@ -4,30 +4,16 @@ String JsonService::convertSensorReadingsToJson(SensorReading sensorReading)
 {
     String jsonMessage;
     DynamicJsonBuffer buffer(200);
-    JsonArray &jsonArray = buffer.createArray();
 
-    JsonObject &soilMoistureReading = buffer.createObject();
-    soilMoistureReading["sensor"] = "SOIL_MOISTURE";
-    soilMoistureReading["value"] = sensorReading.soilMoisture;
-    soilMoistureReading["sensorIndex"] = 1;
-    soilMoistureReading["unit"] = "%";
-    jsonArray.add(soilMoistureReading);
+    JsonObject &reading = buffer.createObject();
+    reading["soilMoisture"] = sensorReading.soilMoisture;
+    reading["WaterLevel"] = sensorReading.waterLevel;
+    reading["WaterLevelUnit"] = sensorReading.waterLevelUnit;
+    reading["Humidity"] = sensorReading.humidity;
+    reading["Temperature"] = sensorReading.temperature;
+    reading["TemperatureUnit"] = sensorReading.temperatureUnit;
 
-    JsonObject &temperatureReading = buffer.createObject();
-    temperatureReading["sensor"] = "TEMPERATURE";
-    temperatureReading["value"] = sensorReading.temperature;
-    temperatureReading["sensorIndex"] = 1;
-    temperatureReading["unit"] = "C";
-    jsonArray.add(temperatureReading);
-
-    JsonObject &humidityReading = buffer.createObject();
-    humidityReading["sensor"] = "HUMIDITY";
-    humidityReading["value"] = sensorReading.humidity;
-    humidityReading["sensorIndex"] = 1;
-    humidityReading["unit"] = "%";
-    jsonArray.add(humidityReading);
-
-    jsonArray.printTo(jsonMessage);
+    reading.printTo(jsonMessage);
     return jsonMessage;
 }
 

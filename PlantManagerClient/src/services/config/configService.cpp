@@ -4,7 +4,7 @@ ConfigService::ConfigService()
 {
   this->config.measuringInterval = 10e6;
   this->config.smtpPort = 465;
-  this->config.appServer = "192.168.1.100/szilahome/sensor";
+  this->config.appServer = "http://192.168.1.100/szilahome/sensor";
   this->config.appServerPort = 8080;
   this->config.smtpServer = "smtp.gmail.com";
   this->config.base64UserId = "a2lzc2xhYzg4QGdtYWlsLmNvbQ==";

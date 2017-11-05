@@ -25,6 +25,8 @@
         "utility": "cpp",
         "rope": "cpp",
         "slist": "cpp",
-        "valarray": "cpp"
+        "valarray": "cpp",
+        "ratio": "cpp",
+        "system_error": "cpp"
     }
 }

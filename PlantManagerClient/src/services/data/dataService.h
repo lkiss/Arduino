@@ -11,10 +11,11 @@ class DataService
 {
 private:
   HTTPClient httpClient;
-  Configuration configuration;
+  ConfigService configurationService;
   JsonService jsonService;
 
 public:
+  DataService(ConfigService configService, JsonService jsonService);
   int sendSensorReadings(SensorReading reading);
   void getConfigurationFromServer();
 };
