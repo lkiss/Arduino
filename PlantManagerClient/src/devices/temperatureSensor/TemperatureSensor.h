@@ -1,6 +1,8 @@
 #ifndef TEMPERATURE_SENSOR
 #define TEMPERATURE_SENSOR
 
+#include "./temperatureReading.h"
+
 class TemperatureSensor
 {
 private:
@@ -9,6 +11,6 @@ private:
 public:
   TemperatureSensor();
   TemperatureSensor(int *DHT11Pin);
-  int *read(int *result);
+  TemperatureReading read();
 };
 #endif

@@ -1,4 +1,4 @@
-#include "./temperatureSensor/TemperatureSensor.h"
+#include "./temperatureSensor/temperatureSensor.h"
 #include "./soilMoistureSensor/SoilMoistureSensor.h"
-#include "./waterLevelSensor/WaterLevelSensor.h"
-#include "./waterPump/WaterPump.h"
+#include "./waterLevelSensor/waterLevelSensor.h"
+#include "./waterPump/waterPump.h"

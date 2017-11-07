@@ -7,11 +7,12 @@ String JsonService::convertSensorReadingsToJson(SensorReading sensorReading)
 
     JsonObject &reading = buffer.createObject();
     reading["soilMoisture"] = sensorReading.soilMoisture;
-    reading["WaterLevel"] = sensorReading.waterLevel;
-    reading["WaterLevelUnit"] = sensorReading.waterLevelUnit;
-    reading["Humidity"] = sensorReading.humidity;
-    reading["Temperature"] = sensorReading.temperature;
-    reading["TemperatureUnit"] = sensorReading.temperatureUnit;
+    reading["waterLevel"] = sensorReading.waterLevel;
+    reading["waterLevelUnit"] = sensorReading.waterLevelUnit;
+    reading["humidity"] = sensorReading.humidity;
+    reading["temperature"] = sensorReading.temperature;
+    reading["temperatureUnit"] = sensorReading.temperatureUnit;
+    reading["dht11ErrorCode"] = sensorReading.dht11ErrorCode;
 
     reading.printTo(jsonMessage);
     return jsonMessage;

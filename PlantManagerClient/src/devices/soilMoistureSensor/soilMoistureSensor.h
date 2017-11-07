@@ -12,7 +12,6 @@ private:
 
 public:
   SoilMoistureSensor();
-  SoilMoistureSensor(int *soilMoisturePin);
   void updateTresholdValues(int newDryTreshold, int newWetTreshold);
   bool isDry();
   int read();

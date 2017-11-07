@@ -5,6 +5,7 @@ struct SensorReading
 {
     int temperature;
     int humidity;
+    int dht11ErrorCode;
     int soilMoisture;
     int waterLevel;
     const char* temperatureUnit;

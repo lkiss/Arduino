@@ -4,13 +4,6 @@
 
 SoilMoistureSensor::SoilMoistureSensor(){}
 
-SoilMoistureSensor::SoilMoistureSensor(int *soilMoisturePin)
-{
-  pinMode(*soilMoisturePin, OUTPUT);
-  digitalWrite(*soilMoisturePin, LOW);
-  this->soilMoisturePin = *soilMoisturePin;
-}
-
 bool SoilMoistureSensor::isDry()
 {
   int sensorReading = this->read();
@@ -35,10 +28,8 @@ int SoilMoistureSensor::read()
 {
   //Log debug
   int result = 0;
-  digitalWrite(this->soilMoisturePin, HIGH);
   delay(50);
   result = analogRead(A0);
-  digitalWrite(this->soilMoisturePin, LOW);
   delay(50);
   return result;
 }
