@@ -33,7 +33,7 @@ void loop()
 
   digitalWrite(powerPin, HIGH);
   SensorReading reading = sensorService.getSensorReadings();
-
+  
   Serial.println("Sensor readings");
   Serial.println("Temperature in celsius");
   Serial.println(reading.temperature);
@@ -45,6 +45,8 @@ void loop()
   Serial.println(reading.waterLevel);
   Serial.println("DHT11 error code");
   Serial.println(reading.dht11ErrorCode);
+
+  sensorService.water(reading);
 
   digitalWrite(powerPin, LOW);
   Serial.end();

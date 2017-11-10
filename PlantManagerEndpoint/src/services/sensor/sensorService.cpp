@@ -28,11 +28,11 @@ SensorService::SensorService(const WaterTank &waterTank, const WaterLevelSensor 
     this->waterTank = waterTank;
 }
 
-bool SensorService::water()
+bool SensorService::water(SensorReading reading)
 {
-    if (this->waterTank.isWaterLevelSufficient(this->waterLevelSensor.getMissingWaterColumHeighCM()))
+    if (this->waterTank.isWaterLevelSufficient(reading.waterLevel))
     {
-        if (this->soilMoistureSensor.isDry())
+        if (this->soilMoistureSensor.isDry(reading.soilMoisture))
         {
             this->waterPump.activateWaterPump();
         }
@@ -42,6 +42,5 @@ bool SensorService::water()
         return false;
     }
 
-    this->waterPump.activateWaterPump();
     return true;
 }

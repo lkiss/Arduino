@@ -18,7 +18,7 @@ class SensorService
     SensorService();
     SensorService(const WaterTank& waterTank, const WaterLevelSensor& waterLevelSensor, const WaterPump& waterPump, const SoilMoistureSensor& soilMoistureSensor, const Dht11Sensor& dht11Sensor);
     SensorReading getSensorReadings();
-    bool water();
+    bool water(SensorReading reading);
 };
 
 #endif

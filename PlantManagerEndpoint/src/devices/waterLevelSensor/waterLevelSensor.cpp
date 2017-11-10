@@ -27,7 +27,6 @@ long WaterLevelSensor::getMissingWaterColumHeighCM()
     digitalWrite(this->triggerPin, LOW);
     duration = pulseIn(this->echoPin, HIGH);
 
-    //Calculate the distance (in cm) based on the speed of sound.
     distance = duration / 58.2;
 
     if (distance >= maximumRange || distance <= minimumRange)

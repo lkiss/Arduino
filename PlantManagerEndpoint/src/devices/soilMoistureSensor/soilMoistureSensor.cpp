@@ -19,6 +19,15 @@ bool SoilMoistureSensor::isDry()
   return false;
 }
 
+bool SoilMoistureSensor::isDry(int soilMoistureValue)
+{
+  if (soilMoistureValue >= this->soilMoistureDryTreshold)
+  {
+    return true;
+  }
+  return false;
+}
+
 bool SoilMoistureSensor::isValidMoistureTreshold(int moistureTreshold)
 {
   if (moistureTreshold > 1024 || moistureTreshold < 0)

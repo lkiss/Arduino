@@ -5,7 +5,7 @@ class WaterTank
 {
 private:
   double waterTankVolumeCC;
-  double minimumWaterThresholdPercentage = 10;
+  double minimumWaterThresholdPercentage = 20;
   WaterTankType waterTankType;
   DimensionsInCentimeters dimensions;
   void CalculateCapacityCC();
