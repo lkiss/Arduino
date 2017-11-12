@@ -5,7 +5,7 @@ class SoilMoistureSensor
 {
 private:
   int soilMoistureDryTreshold = 920;
-  int soilMoistureWetTreshold = 850;
+  int soilMoistureWetTreshold = 550;
   int soilMoisturePin = 0;
 
   bool isValidMoistureTreshold(int moistureTreshold);
