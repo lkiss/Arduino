@@ -10,7 +10,7 @@ int waterSensorTriggerPin = 8;
 int powerPin = 4;
 int soilMoisturePin = 14;
 int sleepCount = 0;
-int sleepAmount = 1;
+int sleepAmount = 225;
 
 Dht11Sensor dht11Sensor(&DHT11Pin);
 SoilMoistureSensor soilMoistureSensor(soilMoisturePin);
@@ -29,7 +29,7 @@ void setup()
 
 void loop()
 {
-  if (sleepCount != sleepAmount)
+  if (sleepCount != 0 && sleepCount != sleepAmount)
   {
     sleepCount++;
     LowPower.powerDown(SLEEP_8S, ADC_OFF, BOD_OFF);
@@ -43,22 +43,11 @@ void loop()
 
   digitalWrite(powerPin, HIGH);
   SensorReading reading = sensorService.getSensorReadings();
-
-  Serial.println("Sensor readings");
-  Serial.println("Temperature in celsius");
-  Serial.println(reading.temperature);
-  Serial.println("Humidity in %");
-  Serial.println(reading.humidity);
-  Serial.println("Soil moisture value");
-  Serial.println(reading.soilMoisture);
-  Serial.println("WaterLevel in %");
-  Serial.println(reading.waterLevel);
-  Serial.println("DHT11 error code");
-  Serial.println(reading.dht11ErrorCode);
-
   sensorService.water(reading);
 
   digitalWrite(powerPin, LOW);
   Serial.end();
+
+  sleepCount++;
   LowPower.powerDown(SLEEP_8S, ADC_OFF, BOD_OFF);
 }
