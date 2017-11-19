@@ -1,0 +1,29 @@
+{
+    "name": "EspSoftwareSerial", 
+    "repository": {
+        "url": "https://github.com/plerup/espsoftwareserial", 
+        "type": "git"
+    }, 
+    "platforms": [
+        "espressif8266"
+    ], 
+    "frameworks": [
+        "arduino"
+    ], 
+    "version": "3.3.1", 
+    "authors": [
+        {
+            "maintainer": false, 
+            "name": "Peter Lerup", 
+            "url": "https://github.com/plerup", 
+            "email": null
+        }
+    ], 
+    "keywords": [
+        "serial", 
+        "softwareserial", 
+        "io"
+    ], 
+    "id": 168, 
+    "description": "Implementation of the Arduino software serial for ESP8266."
+}

@@ -1,0 +1,38 @@
+{
+    "name": "XBee", 
+    "repository": {
+        "url": "https://github.com/andrewrapp/xbee-arduino.git", 
+        "type": "git"
+    }, 
+    "platforms": [
+        "atmelavr"
+    ], 
+    "frameworks": [
+        "arduino"
+    ], 
+    "version": "39f236ea18", 
+    "export": {
+        "include": [
+            "*.cpp", 
+            "*.h", 
+            "examples"
+        ]
+    }, 
+    "authors": [
+        {
+            "maintainer": false, 
+            "name": "Andrew Rapp", 
+            "url": "https://github.com/andrewrapp", 
+            "email": null
+        }
+    ], 
+    "keywords": [
+        "xbee", 
+        "radio", 
+        "rf", 
+        "802.15.4", 
+        "protocol"
+    ], 
+    "id": 6, 
+    "description": "XBees in API mode, with support for both Series 1 (802.15.4) and Series 2 (ZB Pro/ZNet)"
+}
