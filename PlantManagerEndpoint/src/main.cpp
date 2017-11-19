@@ -7,10 +7,11 @@ int DHT11Pin = 5;
 int waterPumpPin = 6;
 int waterSensorEchoPin = 7;
 int waterSensorTriggerPin = 8;
-int powerPin = 4;
+int sensorPowerPin = 4;
+int wifiResetPin = 9;
 int soilMoisturePin = 14;
 int sleepCount = 0;
-int sleepAmount = 225;
+int sleepAmount = 2;
 
 Dht11Sensor dht11Sensor(&DHT11Pin);
 SoilMoistureSensor soilMoistureSensor(soilMoisturePin);
@@ -25,6 +26,9 @@ SensorService sensorService(waterTank, waterLevelSensor, waterPump, soilMoisture
 
 void setup()
 {
+  pinMode(sensorPowerPin, OUTPUT);
+  pinMode(wifiResetPin, OUTPUT);
+  digitalWrite(wifiResetPin, HIGH);
 }
 
 void loop()
@@ -38,14 +42,19 @@ void loop()
 
   sleepCount = 0;
 
-  Serial.begin(9600);
-  pinMode(powerPin, OUTPUT);
+  digitalWrite(wifiResetPin, LOW);
+  delay(50);
+  digitalWrite(wifiResetPin, HIGH);
 
-  digitalWrite(powerPin, HIGH);
+  Serial.begin(9600);
+
+  digitalWrite(sensorPowerPin, HIGH);
   SensorReading reading = sensorService.getSensorReadings();
   sensorService.water(reading);
 
-  digitalWrite(powerPin, LOW);
+  Serial.print(jsonService.convertSensorReadingsToJson(reading));
+
+  digitalWrite(sensorPowerPin, LOW);
   Serial.end();
 
   sleepCount++;

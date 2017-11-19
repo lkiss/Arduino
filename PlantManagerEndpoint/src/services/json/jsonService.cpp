@@ -3,7 +3,7 @@
 String JsonService::convertSensorReadingsToJson(SensorReading sensorReading)
 {
     String jsonMessage;
-    DynamicJsonBuffer buffer(200);
+    DynamicJsonBuffer buffer(100);
 
     JsonObject &reading = buffer.createObject();
     reading["soilMoisture"] = sensorReading.soilMoisture;

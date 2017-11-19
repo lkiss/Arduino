@@ -14,6 +14,7 @@ SensorReading SensorService::getSensorReadings()
     reading.waterLevelUnit = "%";
     reading.humidity = dht11SensorReading.humidity;
     reading.temperature = dht11SensorReading.temperatureInCelsius;
+    reading.temperatureUnit = "C";
     reading.dht11ErrorCode = dht11SensorReading.dht11ErrorCode;
 
     return reading;
